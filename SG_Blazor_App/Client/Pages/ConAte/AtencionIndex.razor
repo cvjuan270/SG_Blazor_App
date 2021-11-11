@@ -1,0 +1,75 @@
+﻿@page "/conate/atencionindex"
+
+@using SG_Blazor_App.Shared.Models
+@inject HttpClient httpClient
+
+<h3>Atenciones</h3>
+
+@if (atenciones == null)
+{
+    <text>Cargando..</text>
+}
+else if (atenciones.Count == 0)
+{
+    <text>No hay Registros</text>
+}
+else
+{
+    <div class="table-table-responsive-sm">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Id</th>
+                    <th>Tip. Exa.</th>
+                    <th>Fec. Ate.</th>
+                    <th>Nombre y apellido</th>
+                    <th>Doc. Identidad</th>
+                    <th>Empresa</th>
+                    <th>Sub Contrata</th>
+                    <th>Proyecto</th>
+                    <th>Area</th>
+                    <th>Puesto de trabajo</th>
+                    <th>Admision</th>
+                    <th>Hora</th>
+                   
+
+                </tr>
+            </thead>
+
+           <tbody>
+                @foreach (var item in atenciones)
+            {
+                <tr>
+                    <td>Botones</td>
+                    <td>@item.IdAtenciones</td>
+                    <td>@item.TipExa</td>
+                    <td>@item.FecAte</td>
+                    <td>@item.NomApe</td>
+                    <td>@item.DocIde</td>
+                    <td>@item.Empres</td>
+                    <td>@item.SubCon</td>
+                    <td>@item.Proyec</td>
+                    <td>@item.Area</td>
+                    <td>@item.PueTra</td>
+                    <td>@item.PeReAd</td>
+                    <td>@item.Hora</td>
+                </tr>
+            }
+           </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    public List<AtencionModel> atenciones;
+
+    private async Task CargarDatos()
+    {
+        atenciones = await httpClient.GetFromJsonAsync<List<AtencionModel>>("api/atencion");
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarDatos();
+    }
+}
