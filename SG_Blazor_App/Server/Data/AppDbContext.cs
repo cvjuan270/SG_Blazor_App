@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using SG_Blazor_App.Shared.Models;
+using SG_Blazor_App.Shared.Models.ConAte;
 
 namespace SG_Blazor_App.Server.Data
 {
@@ -18,6 +19,9 @@ namespace SG_Blazor_App.Server.Data
         }
 
         public virtual DbSet<AtencionModel> Atenciones { get; set; } = null!;
+        public DbSet<InterconsultaModel> interconsultas { get; set; }
+        public DbSet<AdmisionModel> admisions { get; set; }
+        public DbSet<EspecialidadMedicaModel> especialidadMedica { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -31,6 +35,10 @@ namespace SG_Blazor_App.Server.Data
                 entity.HasKey(e => e.IdAtenciones)
                     .HasName("PK_dbo.Atenciones");
             });
+
+            modelBuilder.Entity<AtencionModel>()
+                .HasMany(b => b.interconsultas)
+                .WithOne().HasForeignKey(c => c.IdAtenciones);
 
             OnModelCreatingPartial(modelBuilder);
         }

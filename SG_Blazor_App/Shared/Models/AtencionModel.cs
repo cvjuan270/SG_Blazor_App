@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SG_Blazor_App.Shared.Models.ConAte;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -16,10 +17,12 @@ namespace SG_Blazor_App.Shared.Models
         public string? TipExa { get; set; }
         [Column(TypeName = "date")]
         public DateTime? FecAte { get; set; }
-        [StringLength(100)]
+        [StringLength(100),Required]
         public string? NomApe { get; set; }
-        [StringLength(20)]
+
+        [StringLength(20),Required]
         public string? DocIde { get; set; }
+
         [StringLength(100)]
         public string? Empres { get; set; }
         [StringLength(100)]
@@ -39,5 +42,11 @@ namespace SG_Blazor_App.Shared.Models
         public int? AleAud { get; set; }
         public int? AleEnf { get; set; }
         public int? AlEnHc { get; set; }
+        public ICollection<InterconsultaModel>  interconsultas { get; set; }
+
+        public AtencionModel() 
+        {
+            this.interconsultas= new HashSet<InterconsultaModel>();
+        }
     }
 }

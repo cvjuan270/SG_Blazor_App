@@ -1,13 +1,55 @@
 ﻿@page "/conate/atencionindex"
 
 @using SG_Blazor_App.Shared.Models
+@using SG_Blazor_App.Shared.Models.ConAte
+@using SG_Blazor_App.Shared.Helpers
 @inject HttpClient httpClient
 
 <h3>Atenciones</h3>
 
+<!--Form Bussqueda-->
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3">
+                <input type="date" class="form-control my-1" @bind-value="pr.FecIni" />
+            </div>
+            <div class="col-md-3">
+                <input type="date" class="form-control my-1" @bind-value="pr.FecFin" />
+            </div>
+            <div class="col-md-3">
+                <input type="number" class="form-control my-1" @bind-value="pr.Dni" placeholder="DNI" />
+            </div>
+            <div class="col-md-3">
+                <input type="text" class="form-control my-1" @bind-value="pr.NomApe" placeholder="Nombre y Apellido" />
+            </div>
+            <div class="col-md-3">
+                <input type="text" class="form-control my-1" @bind-value="pr.tipExa" placeholder="Tipo de examen" />
+            </div>
+            <div class="col-md-3">
+                <input type="text" class="form-control my-1" @bind-value="pr.Empres" placeholder="Empresa" />
+            </div>
+            <div class="col-md-3">
+                <input type="text" class="form-control my-1" @bind-value="pr.SubCon" placeholder="Sub Contrata" />
+            </div>
+            <div class="col-md-3">
+                <div class="form-check form-switch my-auto">
+                    <input class="form-check-input my-auto" type="checkbox" id="flexSwitchCheckChecked" @bind-value="pr.TodExa">
+                    <label class="form-check-label my-auto" for="flexSwitchCheckChecked">Mostrar todos los tipos de examen</label>
+                </div>
+            </div>
+            <div class="col-md-3 my-1">
+                <button type="button" class="btn btn-outline-primary" @onclick="@CargarDatos">Buscar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--fin Form Bussqueda-->
 @if (atenciones == null)
 {
-    <text>Cargando..</text>
+    <LoadImage />
+
 }
 else if (atenciones.Count == 0)
 {
@@ -15,61 +57,124 @@ else if (atenciones.Count == 0)
 }
 else
 {
-    <div class="table-table-responsive-sm">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Id</th>
-                    <th>Tip. Exa.</th>
-                    <th>Fec. Ate.</th>
-                    <th>Nombre y apellido</th>
-                    <th>Doc. Identidad</th>
-                    <th>Empresa</th>
-                    <th>Sub Contrata</th>
-                    <th>Proyecto</th>
-                    <th>Area</th>
-                    <th>Puesto de trabajo</th>
-                    <th>Admision</th>
-                    <th>Hora</th>
-                   
+    <div class="card">
+        <div class="card-body">
+            <div class="table-table-responsive-sm">
+                <table class="table table-striped table-sm" style="font-size:80%">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Id</th>
+                            <th>Tip. Exa.</th>
+                            <th>Fec. Ate.</th>
+                            <th>Nombre y apellido</th>
+                            <th>Doc. Identidad</th>
+                            <th>Empresa</th>
+                            <th>Sub Contrata</th>
+                            <th>Proyecto</th>
+                            <th>Area</th>
+                            <th>Puesto de trabajo</th>
+                            <th>Admision</th>
+                            <th>Hora</th>
 
-                </tr>
-            </thead>
 
-           <tbody>
-                @foreach (var item in atenciones)
-            {
-                <tr>
-                    <td>Botones</td>
-                    <td>@item.IdAtenciones</td>
-                    <td>@item.TipExa</td>
-                    <td>@item.FecAte</td>
-                    <td>@item.NomApe</td>
-                    <td>@item.DocIde</td>
-                    <td>@item.Empres</td>
-                    <td>@item.SubCon</td>
-                    <td>@item.Proyec</td>
-                    <td>@item.Area</td>
-                    <td>@item.PueTra</td>
-                    <td>@item.PeReAd</td>
-                    <td>@item.Hora</td>
-                </tr>
-            }
-           </tbody>
-        </table>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in atenciones)
+                        {
+                            <tr>
+                                <td>
+                                    <button class="btn" @onclick="@(()=>GetAdmision(item))">
+                                        <span class="oi oi-plus" />
+                                    </button>
+                                </td>
+                                <td>@item.IdAtenciones</td>
+                                <td>@item.TipExa</td>
+                                <td>@item.FecAte</td>
+                                <td>@item.NomApe</td>
+                                <td>@item.DocIde</td>
+                                <td>@item.Empres</td>
+                                <td>@item.SubCon</td>
+                                <td>@item.Proyec</td>
+                                <td>@item.Area</td>
+                                <td>@item.PueTra</td>
+                                <td>@item.PeReAd</td>
+                                <td>@item.Hora</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 }
 
+@if (ShowAdmision)
+{
+    <AdmisionEdit admisionView="@admisionView" OnConfirm="@OnConfirmAdm" OnCancel="@OnCancelAdm" />
+}
+
 @code {
+
+    private bool ShowAdmision;
     public List<AtencionModel> atenciones;
+    public AdmisionViewModel admisionView = new AdmisionViewModel();
+    public ParametroBusquedaAtencion pr = new ParametroBusquedaAtencion();
 
     private async Task CargarDatos()
     {
-        atenciones = await httpClient.GetFromJsonAsync<List<AtencionModel>>("api/atencion");
+        atenciones = null;
+        atenciones = await httpClient.GetFromJsonAsync<List<AtencionModel>>
+        ($"api/atencion?FecIni={pr.FecIni}&FecFin={pr.FecFin}&Dni={pr.Dni.ToString()}&NomApe={pr.NomApe}&TipExa={pr.tipExa}&Empres={pr.Empres}&SubCon={pr.SubCon}&TodExa={pr.TodExa.ToString()}");
     }
     protected override async Task OnInitializedAsync()
     {
         await CargarDatos();
+    }
+
+    private async Task GetAdmision(AtencionModel ate)
+    {
+        admisionView.atencion = ate;
+        admisionView.admision = await httpClient.GetFromJsonAsync<AdmisionModel>($"api/admision/searchs?IdAtenciones={ate.IdAtenciones}");
+        ShowAdmision = true;
+    }
+    private void OnCancelAdm()
+    {
+        admisionView = new AdmisionViewModel();
+        ShowAdmision = false;
+    }
+
+    private async Task OnConfirmAdm()
+    {
+        try
+        {
+            //Admision
+            var adm = admisionView.admision;
+            if (adm.IdAdmi > 0)
+            {
+                await httpClient.PutAsJsonAsync<AdmisionModel>($"api/admision/{adm.IdAdmi}", adm);
+            }
+            else
+            {
+                await httpClient.PostAsJsonAsync<AdmisionModel>("api/admision/", adm);
+            }
+            //fin Admision
+
+            //Interconsulta
+            if (admisionView.interconsultas.Count>0)
+            {
+                await httpClient.PostAsJsonAsync<List<InterconsultaModel>>("api/interconsulta/",admisionView.interconsultas);
+            }
+            //fin Interconsulta
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
+        admisionView = new AdmisionViewModel();
+        ShowAdmision = false;
     }
 }

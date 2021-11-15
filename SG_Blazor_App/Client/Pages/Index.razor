@@ -7,3 +7,23 @@
 Welcome to your new app.
 
 <SurveyPrompt Title="How is Blazor working for you?" />
+<button class="btn btn-danger" @onclick="@(()=>ShowDialog = true)">Mostrar dialog</button>
+
+@if (ShowDialog)
+{
+    <div class="modal modal-fullscreen show" style="display:block; background-color: rgba(10,10,10,.8);" aria-modal="true" role="dialog">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title text-primary ">Admision</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+}
+
+@code {
+    public bool ShowDialog { get; set; }
+}

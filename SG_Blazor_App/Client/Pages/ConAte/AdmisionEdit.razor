@@ -1,0 +1,218 @@
+﻿@using SG_Blazor_App.Shared.Helpers
+@using SG_Blazor_App.Shared.Models
+@using SG_Blazor_App.Shared.Models.ConAte
+
+@inject HttpClient httpClient
+
+<div class="modal modal-dialog-scrollable  show" style="display:block; background-color: rgba(10,10,10,.8);" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-primary ">Admision</h4>
+                <button type="button" class="btn-close" @onclick="@OnCancel">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!--atencion-->
+                <div class="card mb-1">
+                    <div class="card-body">
+                        <div class="mb-1 row">
+                            <label class="col-sm-4 col-form-label">Id</label>
+                            <div class="col-sm-8">
+                                <input type="text" readonly class="form-control form-control-sm" @bind-value="@admisionView.atencion.IdAtenciones">
+                            </div>
+                        </div>
+
+                        <div class="mb-1 row">
+                            <label class="col-sm-4 col-form-label">Dni</label>
+                            <div class="col-sm-8">
+                                <input type="text" readonly class="form-control form-control-sm" @bind-value="@admisionView.atencion.DocIde">
+                            </div>
+                        </div>
+                        <div class="mb-1 row">
+                            <label class="col-sm-4 col-form-label">Nombres y Ape.</label>
+                            <div class="col-sm-8">
+                                <input type="text" readonly class="form-control form-control-sm" @bind-value="@admisionView.atencion.NomApe">
+                            </div>
+
+                        </div>
+                        <div class="mb-1 row">
+                            <label class="col-sm-4 col-form-label">Empresa</label>
+                            <div class="col-sm-8">
+                                <input type="text" readonly class="form-control form-control-sm" @bind-value="@admisionView.atencion.Empres">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!--fin atencion-->
+                <!--admision-->
+                <div class="card mb-2">
+                    <div class="card-header">
+                        <h4 class="card-title">Admision</h4>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="mb-1 row">
+                            <label class="col-sm-4 col-form-label">Hora Registro</label>
+                            <div class="col-sm-8">
+                                <input type="time" class="form-control form-control-sm " @bind="admisionView.admision.HorIng" />
+                            </div>
+                        </div>
+
+                        <div class="mb-1 row">
+                            <label class="col-sm-4 col-form-label">Hora Registro</label>
+                            <div class="col-sm-8">
+                                <input type="time" readonly class="form-control form-control-sm" @bind="admisionView.admision.HorReg" />
+                            </div>
+                        </div>
+
+                        <div class="mb-1 row">
+                            <label class="col-sm-4 col-form-label">Hora de Salida</label>
+                            <div class="col-sm-8">
+                                <input type="time" class="form-control form-control-sm" @bind="admisionView.admision.HorSal">
+                            </div>
+                        </div>
+
+                        <div class="mb-1 row">
+                            <label class="col-sm-4 col-form-label">Pendientes</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control form-control-sm" @bind="admisionView.admision.Pendie">
+                            </div>
+                        </div>
+
+                        <div class="mb-1 row">
+                            <label class="col-sm-4 col-form-label"></label>
+                            <div class="col-sm-8">
+                                <input class="form-check-input" type="checkbox" @bind="admisionView.admision.EnvAsi">
+                                <label class="form-check-label" for="flexSwitchCheckChecked">Envio de asistencia</label>
+                            </div>
+                        </div>
+
+                        <div class="mb-1 row">
+                            <label class="col-sm-4 col-form-label"></label>
+                            <div class="col-sm-8">
+                                <input class="form-check-input" type="checkbox" @bind="admisionView.admision.EnvApt">
+                                <label class="form-check-label" for="flexSwitchCheckChecked">Envio de aptitud</label>
+                            </div>
+                        </div>
+
+                        <div class="mb-1 ">
+                            <label class=" col-form-label">Fech. envio de resultados a medicina</label>
+                            <input type="date" class="form-control form-control-sm" @bind="admisionView.admision.FecEnvResMed">
+                        </div>
+
+                        <div class="mb-1">
+                            <label class="col-form-label">Fech. envio de resultados a Empresa</label>
+                            <input type="date" class="form-control form-control-sm" @bind="admisionView.admision.FecEnvResEmp">
+                        </div>
+
+                    </div>
+                </div>
+                <!--Fin admision-->
+                <!--Interconsultas-->
+
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Interconsultas</h4>
+                        <div class="mb-1 row">
+                            <div class="col-sm-4">
+                                <input list="lstinter" class="form-control form-control-sm " @bind="interconsulta.Descri" />
+                                <datalist id="lstinter">
+                                    @foreach (var item in especialidad)
+                                    {
+                                        <option value="@item.Especialidad"></option>
+                                    }
+                                </datalist>
+                            </div>
+                            <div class="col-sm-4">
+                                <input type="button" class="btn btn-outline-primary" @onclick="AddInterconsulta" value="Agregar" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive-sm">
+                            <table class="table table-warning table-sm" style="font-size:80%">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Nombre</th>
+                                        <th>Interconsulta</th>
+                                        <th>Fecha de Envio</th>
+                                        <th>Personal que Envió correo</th>
+                                        <th>Envio de hoja informativa</th>
+                                        <th>Fecha de Cominicación al paciente</th>
+                                        <th>Personal que Comunicó al paciente</th>
+                                        <th>Fecha de levantamiento de observaciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in admisionView.interconsultas)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <button class="btn btn-danger" @onclick="@(()=>BorrarInterconsulta(item))">
+                                                    <span class="oi oi-trash"></span>
+                                                </button>
+                                            </td>
+                                            <td>@admisionView.atencion.DocIde | @admisionView.atencion.NomApe</td>
+                                            <td><input type="text" class="form-control form-control-sm" @bind="@item.Descri" readonly="readonly" /></td>
+                                            <td><input type="date" class="form-control form-control-sm" @bind="@item.FecEnv" /></td>
+                                            <td><input type="text" class="form-control form-control-sm" @bind="@item.PeEnCo" /></td>
+                                            <td><input type="checkbox" class="form-check-input" @bind="@item.EnHoIn" /></td>
+                                            <td>@item.FeCoPa</td>
+                                            <td>@item.PeCoPa</td>
+                                            <td>@item.FeLeObs</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- Fin Interconsultas-->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary my-2" type="button" @onclick="OnConfirm">Aceptar</button>
+                <button class="btn btn-secondary my-2" type="button" @onclick="OnCancel">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+
+    [Parameter] public EventCallback OnCancel { get; set; }
+    [Parameter] public EventCallback OnConfirm { get; set; }
+    [Parameter] public AdmisionViewModel admisionView { get; set; }
+    public InterconsultaModel interconsulta = new InterconsultaModel();
+    public List<EspecialidadMedicaModel> especialidad = new List<EspecialidadMedicaModel>();
+
+    private void AddInterconsulta()
+    {
+        if (!String.IsNullOrEmpty(interconsulta.Descri))
+        {
+            interconsulta.IdAtenciones = admisionView.atencion.IdAtenciones;
+            interconsulta.UserName = "Anonimo";
+            interconsulta.PeCoPa = " ";
+            interconsulta.PeEnCo = " ";
+            admisionView.interconsultas.Add(interconsulta);
+            interconsulta = new InterconsultaModel();
+        }
+    }
+    private void BorrarInterconsulta(InterconsultaModel inter)
+    {
+        admisionView.interconsultas.Remove(inter);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        admisionView.admision.IdAtenciones = admisionView.atencion.IdAtenciones;
+        admisionView.admision.HorReg = DateTime.Parse(admisionView.atencion.Hora.ToString());
+        admisionView.admision.UserName = "Anonimo";
+
+        especialidad = await httpClient.GetFromJsonAsync<List<EspecialidadMedicaModel>>("api/especialidadmedica");
+
+    }
+}
