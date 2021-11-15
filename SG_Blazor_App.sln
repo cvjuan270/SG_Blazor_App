@@ -9,6 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SG_Blazor_App.Client", "SG_
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SG_Blazor_App.Shared", "SG_Blazor_App\Shared\SG_Blazor_App.Shared.csproj", "{71C3C75B-ADC9-4530-B727-B18184647280}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL", "SQL", "{A4749AC4-0729-442D-944C-9775C71384A2}"
+	ProjectSection(SolutionItems) = preProject
+		Atenciones.sql = Atenciones.sql
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
