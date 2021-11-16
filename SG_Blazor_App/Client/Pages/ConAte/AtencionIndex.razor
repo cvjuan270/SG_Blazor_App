@@ -87,7 +87,7 @@ else
                             <tr>
                                 <td>
                                     <button class="btn" @onclick="@(()=>GetAdmision(item))">
-                                        <span class="oi oi-plus" />
+                                        <span class="oi oi-laptop" />
                                     </button>
                                 </td>
                                 <td>@item.IdAtenciones</td>
@@ -136,6 +136,7 @@ else
 
     private async Task GetAdmision(AtencionModel ate)
     {
+        admisionView = new AdmisionViewModel();
         admisionView.atencion = ate;
         admisionView.admision = await httpClient.GetFromJsonAsync<AdmisionModel>($"api/admision/searchs?IdAtenciones={ate.IdAtenciones}");
         ShowAdmision = true;

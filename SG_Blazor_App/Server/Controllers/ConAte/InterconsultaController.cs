@@ -22,19 +22,50 @@ namespace SG_Blazor_App.Server.Controllers.ConAte
         {
             return await db.interconsultas.ToListAsync();
         }
+
         [HttpGet]
         [Route("searchs")]
         public async Task<ActionResult<ICollection<InterconsultaModel>>> Getsearchs(int IdAtenciones)
         {
-            return await db.interconsultas.ToListAsync();
+
+
+            List<InterconsultaModel>  interconsultas = new List<InterconsultaModel>();
+            interconsultas= await db.interconsultas.Where(c=>c.IdAtenciones==IdAtenciones).ToListAsync();
+            return interconsultas;
         }
 
         [HttpPost]
         public async Task<ActionResult<InterconsultaModel>> PostInterconsulta(List<InterconsultaModel> interconsultas) 
         {
+            try
+            {
+               List<InterconsultaModel> lst = new List<InterconsultaModel>();
+                foreach (var item in interconsultas)
+                {
+                    if (db.interconsultas.Contains(item))
+                    {
+                        db.Entry(item).State = EntityState.Modified;
+                        lst.Add(item);
 
-            db.interconsultas.AddRange(interconsultas);
-            db.SaveChanges();
+                    }
+                }
+
+                foreach (var item in lst)
+                {
+                    interconsultas.Remove(item);
+                }
+                if (interconsultas.Count>0)
+                {
+                    db.AddRange(interconsultas);
+                }
+
+                await db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine("guardarInterconsulta:" + ex.Message);
+            }
             return null;
         }
 

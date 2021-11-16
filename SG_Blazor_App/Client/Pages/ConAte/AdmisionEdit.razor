@@ -150,9 +150,12 @@
                                     {
                                         <tr>
                                             <td>
-                                                <button class="btn btn-danger" @onclick="@(()=>BorrarInterconsulta(item))">
-                                                    <span class="oi oi-trash"></span>
-                                                </button>
+                                                @if (item.IdInter==0)
+                                                {
+                                                    <button class="btn btn-danger" @onclick="@(()=>BorrarInterconsulta(item))">
+                                                        <span class="oi oi-trash"></span>
+                                                    </button>
+                                                }
                                             </td>
                                             <td>@admisionView.atencion.DocIde | @admisionView.atencion.NomApe</td>
                                             <td><input type="text" class="form-control form-control-sm" @bind="@item.Descri" readonly="readonly" /></td>
@@ -213,6 +216,7 @@
         admisionView.admision.UserName = "Anonimo";
 
         especialidad = await httpClient.GetFromJsonAsync<List<EspecialidadMedicaModel>>("api/especialidadmedica");
+        admisionView.interconsultas = await httpClient.GetFromJsonAsync<List<InterconsultaModel>>($"api/interconsulta/?IdAtenciones={admisionView.atencion.IdAtenciones}");
 
     }
 }
